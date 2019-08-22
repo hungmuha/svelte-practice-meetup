@@ -30,20 +30,25 @@
 
     let editMode; 
 
-    function addMeetup() {
+    function addMeetup(event) {
         const newMetup = {
             id: Math.random().toString(),
-            title: title,
-            subtitle: subtitle,
-            description: description,
-            imageUrl: imageUrl,
-            contactEmail: email,
-            address: address
+            title: event.detail.title,
+            subtitle: event.detail.subtitle,
+            description: event.detail.description,
+            imageUrl: event.detail.imageUrl,
+            contactEmail: event.detail.email,
+            address: event.detail.address 
         };
 
         // meetups.push(newMetup); DOES NOT WORK
         //below works triggered checking with = sign
         meetups = [newMetup,...meetups];
+        editMode = null;
+    }
+
+    function cancelEdit() {
+        editMode = null;
     }
 
     function toggleFavorite(event) {
@@ -60,14 +65,21 @@
     main {
         margin-top: 5rem;
     }
+
+    .meetup-controls {
+        margin: 1rem;
+    }
 </style>
 
 <Header/>
 
 <main>
-    <Button caption ="New Meetup" on:click="{() => (editMode='add')}" />
+    <div class="meetup-controls">
+        <Button on:click="{() => (editMode='add')}">New Meetup</Button>
+    </div>
+    
     {#if editMode === 'add'}
-        <EditMeetup />
+        <EditMeetup on:save="{addMeetup}" on:cancel={cancelEdit}/>
     {/if}
     <MeetupGrid {meetups} on:toggleFavorite="{toggleFavorite}"/>
 </main>
